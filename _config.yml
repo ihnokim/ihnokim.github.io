@@ -19,7 +19,7 @@ locale                   : "ko"
 title                    : "ihnokim"
 title_separator          : "-"
 name                     : "Inho Kim"
-description              : "An amazing website."
+description              : "ihnokim's study notes."
 url                      : "https://ihnokim.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "ihnokim/ihnokim.github.io"
@@ -106,7 +106,7 @@ analytics:
 # Site Author
 author:
   name             : "Inho Kim"
-  avatar           : "/assets/images/ihnokim.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar           : # "/assets/images/ihnokim.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Software Engineer, Samsung Electronics."
   location         : "Seoul, Republic of Korea"
   email            :
