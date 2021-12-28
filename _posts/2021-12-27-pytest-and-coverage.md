@@ -164,7 +164,7 @@ $ pytest --cov mymodule --cov-report html tests
 위 명령어의 의미는 다음을 의미한다: "mymodule이라는 패키지에 대해 coverage를 산출하는데,
 이때 테스트 코드는 tests 디렉토리 안에 있는 것들을 사용하고, 결과는 HTML로 남겨라."
 
-![coverage results]({{ site.url }}{{ site.baseurl }}/assets/images/pytest/coverage.PNG){: .align-center}
+![coverage results]({{ site.url }}{{ site.baseurl }}/assets/images/coverage/coverage.PNG){: .align-center}
 
 명령어를 실행하면, 같은 디렉토리 안에 htmlcov라는 디렉토리가 생기고, 그 안에 ```index.html``` 파일이 생성된다.
 web browser를 통해 열어보면, mymodule에 작성한 코드들의 coverage를 확인해볼 수 있다.
