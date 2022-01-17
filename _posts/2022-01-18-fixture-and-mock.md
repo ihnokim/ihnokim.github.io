@@ -165,7 +165,7 @@ def test_mock_function(mock):
 ```
 
 또는 이렇게 patch라는 decorator를 사용하여 코드를 더욱 깔끔하게 만들어줄 수 있다.
-위에서 ```with ... as mock``` 부분 대신 테스트 코드의 인자에 ```mock```을 전달하여 사용하면 된다.
+```with ... as mock``` 부분 대신 테스트 코드의 인자에 ```mock```을 전달하여 사용하면 된다.
 mock이라는 인자와 함께 fixture들도 인자로 주면, mock과 fixture를 둘 다 사용 가능하다.
 (e.g. ```def test_mock_and_fixture(mock, my_fixture1, my_fixture2):```)
 다만, 이 경우 mock이 가장 앞에 와야 한다.
@@ -198,7 +198,7 @@ patch한다면, 간단하게 테스트를 통과할 수 있게 된다.
 2. ```MyMongoAdapter``` 클래스는 실제 MongoDB에 접근하는 ```MongoClient```라는 클래스를 내부적으로 사용한다.
 3. 테스트 환경에서는 database에 접근이 불가능하다.
 4. ```MongoClient``` 객체를 그대로 사용하면 연결을 시도할 때 테스트가 실패한다.
-5. ```FakeMongoClient```라는 클래스는 ```MongoClient```와 동일한 동작을 수행하지만, 메모리 상에서 모든 작업을 처리해서 database 연결이 필요없는 직접 개발한 클래스이다.
+5. ```FakeMongoClient```라는 클래스는 ```MongoClient```와 동일한 동작을 수행하지만, 메모리상에서 모든 작업을 처리하도록 직접 개발한 클래스이다. (database 연결 X)
 6. ```MongoClient``` 객체를 patch를 통해 ```FakeMongoClient``` 객체로 덮어쓴 후 테스트를 진행한다.
 
 ``` python
@@ -220,7 +220,7 @@ def fake_pymongo_client():
 def test_fake_pymongo_adapter(fake_pymongo_client):
     adapter = MyMongoAdapter()
     adapter.test_db.test_collection.insert_one({'username': 'ihnokim', 'token': 1})
-    document = adapter.test_db.test_collection.find({'username': 'ihnokim'})
+    document = adapter.test_db.test_collection.find_one({'username': 'ihnokim'})
     assert '_id' in document
     assert 'token' in document
     assert document['token'] == 1
