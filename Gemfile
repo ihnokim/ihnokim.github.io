@@ -1,4 +1,5 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 3.5"
+gem "jekyll", "~> 4.2.2"
 gem "minimal-mistakes-jekyll"
+gem "jemoji"
