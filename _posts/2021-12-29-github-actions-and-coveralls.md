@@ -125,10 +125,10 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python {% raw %}${{ matrix.python-version }}{% endraw %}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
@@ -142,7 +142,7 @@ jobs:
         python -m pip install coveralls==2.2
         coveralls --service=github
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
 ```
 
 복잡한 시나리오를 처음부터 manual하게 진행한다면 벌써부터 숨이 막히지만, Github Actions를 사용하면 이렇게 간단하게
