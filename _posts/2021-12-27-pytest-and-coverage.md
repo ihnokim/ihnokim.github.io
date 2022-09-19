@@ -11,7 +11,7 @@ toc_sticky: true
 toc_label: "Table of contents"
 ---
 
-Test Driven Development(TDD)의 중요성은 두 말할 필요가 없다. java의 JUnit이나 python의 unittest 등 여러 프로그래밍 언어들은 제각각 단위 테스트 도구들을 제공한다.
+Test Driven Development (TDD)의 중요성은 두 말할 필요가 없다. java의 JUnit이나 python의 unittest 등 여러 프로그래밍 언어들은 제각각 단위 테스트 도구들을 제공한다.
 python의 경우, 기본적으로 unittest라는 단위 테스트 도구가 내장되어 있는데, JUnit처럼 테스트 코드를 구현하기 위해 정형화된 형식에 맞추어야 한다는 불편함이 있다. (e.g. class 구현, decorator 추가, etc.)
 수소문을 해보니, python 진영에서는 pytest라는 3rd party 패키지를 많이 사용한다고 한다. 이유는 매우 간편하기 때문인데, 실제로 사용해보니 매우 직관적어서 진입장벽이 낮았다.
 
@@ -21,8 +21,6 @@ python의 경우, 기본적으로 unittest라는 단위 테스트 도구가 내�
 - coverage 산출 방법
 - Github Actions 및 Coveralls 연동 방법
 - fixture, mock 등을 활용하여 가짜 database 만들기
-
-예제들은 직접 삽질했던 과정의 산출물들이므로, 더 좋은 방법이 있다면 자유롭게 feedback, comment 공유가 되었으면 좋겠다.
 
 ## 1. pytest 준비하기
 
