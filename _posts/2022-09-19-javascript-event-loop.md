@@ -53,7 +53,7 @@ javascript의 런타임 자체는 단일 스레드이지만, browser 환경은 �
 
 ### 2-1. browser 실행 환경 구성요소들의 역할
 
-![browser runtime]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop2.PNG){: .align-center}
+![browser runtime]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop2.png){: .align-center}
 
 browser 실행 환경을 역할별로 나누면, 크게 web APIs, event table, callback queue, event loop 등으로 구성되어 있다.
 - heap & call stack: 앞서 설명한 부분과 동일하다.
