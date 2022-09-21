@@ -35,7 +35,7 @@ event loop는 보통 싱글 스레드 기반의 동시성 (single-threaded concu
 
 코드에서 함수를 호출하면, 함수의 인수와 지역변수 등의 정보가 포함된 frame이라는 형태로 stack에 쌓인다. 일반적인 프로그래밍 언어에서의 함수 호출 스택 (call stack)과 동일하게 동작한다. 선입후출 (First In, Last Out) 구조로, 함수 안에서 다른 함수를 호출하면 stack의 가장 위에 push되고, 실제 CPU 점유를 통한 실행은 stack의 가장 위부터 pop하여 실행하는 식으로 동작하는 것이다.
 
-(참고) 엄밀하게 따지면, 인수와 지역 변수는 스택 바깥에 저장되므로 바깥 함수가 반환한 후에도 계속 존재할 수 있다. 따라서, 중첩 함수에서 지역 변수에 접근할 수 있다. 중첩 함수에 대한 내용은 다른 글에서 다루도록 하겠다.
+※ 참고: 엄밀하게 따지면, 인수와 지역 변수는 스택 바깥에 저장되므로 바깥 함수가 반환한 후에도 계속 존재할 수 있다. 따라서, 중첩 함수에서 지역 변수에 접근할 수 있다. 중첩 함수에 대한 내용은 다른 글에서 다루도록 하겠다.
 
 ### 1-2. heap 영역
 
@@ -221,7 +221,7 @@ message 2
 
 ### 4-2. javascript vs dart?
 
-dart의 Future가 javascript의 ```Promise```와 유사한 개념으로 사용된다. ```async```, ```await``` 등 문법적인 측면도 매우 유사하다.
+dart의 ```Future```가 javascript의 ```Promise```와 유사한 개념으로 사용된다. ```async```, ```await``` 등 문법적인 측면도 매우 유사하다.
 
 ### 4-3. javascript vs kotlin?
 
@@ -266,7 +266,7 @@ function receiveMessage(event)
 }
 ```
 
-위 코드에서 callback에 전달되는 메시지 (```event```)는 다음과 같은 property들을 가진다.
+위 코드에서 callback에 전달되는 메시지 ```event```는 다음과 같은 property들을 가진다.
 
 - data: 다른 윈도우에서 전송된 객체이다.
 - origin: ```postMessage```가 호출될 때 메시지를 보내는 window의 origin을 의미한다. http://example.com:8080같이 URI 형식이다.
