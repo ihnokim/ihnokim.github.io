@@ -1,5 +1,5 @@
 ---
-title:  "Event Loop: JavaScript의 비동기 처리 방식"
+title: "Event Loop: JavaScript의 비동기 처리 방식"
 categories: 
   - backend
 tags:

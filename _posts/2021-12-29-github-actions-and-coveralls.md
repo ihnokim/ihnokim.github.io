@@ -1,5 +1,5 @@
 ---
-title:  "Testing Python 2: Github Actions and Coveralls"
+title: "Testing Python 2: Github Actions and Coveralls"
 categories: 
   - python
 tags:

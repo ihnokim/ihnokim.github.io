@@ -1,5 +1,5 @@
 ---
-title:  "Substring Search Algorithm 1: Brute-force"
+title: "Substring Search Algorithm 1: Brute-force"
 categories: 
   - algorithm
 tags:
@@ -37,7 +37,7 @@ Output: -1
 ```
 
 문자열 검색 문제의 목표는 간단하다.
-N 길이의 긴 input string이 주어지고, M 길이의 비교적 짧은 문자열 패턴(substring)이 주어진다.
+N 길이의 긴 input string이 주어지고, M 길이의 비교적 짧은 문자열 패턴 (substring)이 주어진다.
 이후 편의상 N 길이의 input string을 S(N), M 길이의 문자열 패턴을 P(M)이라고 표기하겠다.
 이때, S(N)에서 P(M)의 위치를 찾으면 된다.
 만약 찾고자 하는 패턴이 input string 내에 존재하지 않는다면, -1을 반환하면 된다.

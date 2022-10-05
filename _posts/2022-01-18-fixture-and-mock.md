@@ -1,5 +1,5 @@
 ---
-title:  "Testing Python 3: fixture and mock"
+title: "Testing Python 3: fixture and mock"
 categories: 
   - python
 tags:

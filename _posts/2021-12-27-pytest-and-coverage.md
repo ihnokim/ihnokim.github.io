@@ -1,5 +1,5 @@
 ---
-title:  "Testing Python 1: pytest and coverage"
+title: "Testing Python 1: pytest and coverage"
 categories: 
   - python
 tags:
