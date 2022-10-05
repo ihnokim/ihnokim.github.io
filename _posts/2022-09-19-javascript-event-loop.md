@@ -19,9 +19,30 @@ javascript는 단일 스레드 기반의 언어로 한 번에 하나의 작업�
 더 나아가, WSGI와 ASGI의 동작 방식 차이, Spring, Node.js 기반 프레임워크들의 스레드 활용 방식 차이 등 심화된 내용에서도 빼놓을 수 없는 개념이다.
 이 글에서는 javascript 런타임의 기본인 이벤트 루프 (event loop)에 대한 설명을 바탕으로, 비동기 처리에 대한 기본적인 개념을 알아보고자 한다.
 
-## 1. event loop의 개념 및 주요 영역들
+## 1. 동기 처리와 비동기 처리의 차이
 
-이벤트 루프 (event loop)는 javascript 런타임에서 동작원리를 설명하기 위해 핵심적인 개념이며, 크게 다음과 같은 역할을 돕는다.
+동기 처리 방식과 비동기 처리 방식의 가장 큰 차이는 "요청에 대해 완료까지 대기하는가"로 정리할 수 있다.
+
+요청이 다수 발생했을 때,
+
+- 동기 처리 방식 시스템은 순차적으로 처리하며, 하나의 작업이 완료될 때까지 기다렸다가 다음 작업을 수행한다.
+- 비동기 처리 방식 시스템은 대기가 필요한 순간 기다리지 않고 바로 눈 앞에 있는 작업들을 먼저 처리한다. 따라서, 작업 완료 순서가 요청 순서와 동일하다고 보장할 수 없다.
+
+예를 들어, 식당 종업원에게 햄버거를 주문하는 경우를 생각해보자.
+동기 방식의 식당에서 손님1의 주문을 받은 종업원은 햄버거가 조리될 때까지 주방에서 기다리다가, 햄버거가 준비되면 손님1에게 햄버거를 서빙한다.
+서빙이 완료된 후에야 다음 손님2의 주문을 받는다. 즉, 종업원이 아무 행동도 하지 않고 기다리기만 하는 시간이 존재한다.
+
+![sync example]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/sync_example.gif){: .align-center}
+
+반면, 비동기 방식의 식당에서는 손님1의 주문을 받은 종업원이 주방에 햄버거 준비를 요청한 뒤, 기다리지 않고 바로 다음 손님2의 주문을 받는다.
+즉, 종업원은 쉴 틈도 없이 아주 열심히 일한다.
+
+![async example]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/async_example.gif){: .align-center}
+
+## 2. event loop의 개념 및 주요 영역들
+
+웹 브라우저에서 주로 사용되는 javascript는 이벤트 루프 (event loop)를 통해 비동기 처리를 구현한다.
+event loop는 javascript 런타임에서 동작원리를 설명하기 위해 핵심적인 개념이며, 크게 다음과 같은 역할을 돕는다.
 
 - 코드의 실행
 - 이벤트의 수집 및 처리
@@ -31,27 +52,27 @@ event loop는 보통 싱글 스레드 기반의 동시성 (single-threaded concu
 
 ![stack, heap, queue explanation]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop1.PNG){: .align-center}
 
-### 1-1. stack 영역
+### 2-1. stack 영역
 
 코드에서 함수를 호출하면, 함수의 인수와 지역변수 등의 정보가 포함된 frame이라는 형태로 stack에 쌓인다. 일반적인 프로그래밍 언어에서의 함수 호출 스택 (call stack)과 동일하게 동작한다. 선입후출 (First In, Last Out) 구조로, 함수 안에서 다른 함수를 호출하면 stack의 가장 위에 push되고, 실제 CPU 점유를 통한 실행은 stack의 가장 위부터 pop하여 실행하는 식으로 동작하는 것이다.
 
 ※ 참고: 엄밀하게 따지면, 인수와 지역 변수는 스택 바깥에 저장되므로 바깥 함수가 반환한 후에도 계속 존재할 수 있다. 따라서, 중첩 함수에서 지역 변수에 접근할 수 있다. 중첩 함수에 대한 내용은 다른 글에서 다루도록 하겠다.
 
-### 1-2. heap 영역
+### 2-2. heap 영역
 
 메모리에서 비교적 크고 구조화되지 않은 영역이다. 객체 (object)들은 이 영역에 할당된다. 예를 들어, C 계열 언어에서 malloc, new 등을 통한 동적할당을 하거나, 객체지향언어에서 인스턴스화된 클래스의 객체들은 이 영역에 저장된다.
 
-### 1-3. queue 영역
+### 2-3. queue 영역
 
 javascript의 런타임에서 처리할 메시지의 대기열로 사용되는 영역이다. 각각의 메시지에는 메시지를 처리하기 위한 callback 함수들이 연결된다. event loop는 선입선출 (First In, First Out) 방식으로 대기열에서 가장 오래된 메시지부터 queue에서 꺼내서 처리한다. 이를 위해 런타임은 꺼낸 메시지를 매개변수로 설정하여, 메시지에 연결된 callback 함수를 호출한다. 다른 함수와 마찬가지로 호출을 통한 새로운 stack frame이 생성된다.
 
-## 2. event loop의 동작 방식 (비동기 처리)
+## 3. event loop의 동작 방식 (비동기 처리)
 
 C, Java 같은 언어로 기초 학습을 하다가 처음 javascript 언어를 접하는 개발자들이라면, 자신이 의도하고 코딩한 것과 다른 순서로 함수들이 동작하는 경험을 해본 적이 있을 것이다. 문법의 괴랄함과 더불어 이런 난해한 "실행 순서"가 javascript 언어의 진입장벽을 높이고 "ugly language"라는 오명을 낳게 한 주범이다.
 event loop가 비동기 (async) 함수들을 처리하는 방식에 대한 설명을 통해 함수 실행 순서에 대한 실마리를 얻을 수 있다. 우선 시작에 앞서, javascript 언어 자체가 비동기 동작을 지원하는 것은 아니고, 브라우저 (browser) 혹은 node 같은 실행 환경에 의한 것임을 인지하고 넘어가자.
 javascript의 런타임 자체는 단일 스레드이지만, browser 환경은 사실 여러 스레드를 사용한다는 점을 참고로 알아두자. 이후 내용들은 browser 환경을 기준으로 설명을 진행하겠다.
 
-### 2-1. browser 실행 환경 구성요소들의 역할
+### 3-1. browser 실행 환경 구성요소들의 역할
 
 ![browser runtime]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop2.png){: .align-center}
 
@@ -62,7 +83,7 @@ browser 실행 환경을 역할별로 나누면, 크게 web APIs, event table, c
 - callback queue: 이벤트가 발생할 경우 실행될 callback 함수가 저장 (예약)되는 곳이다.
 - event loop: call stack과 callback queue를 지속적으로 모니터링하면서, call stack이 비어있을 경우 callback queue에서 함수를 꺼내 call stack에 추가해주는 역할을 수행한다.
 
-### 2-2. event loop의 메시지 처리 방식
+### 3-2. event loop의 메시지 처리 방식
 
 event loop가 메시지를 수신하는 동작을 pseudo code로 나타내면 다음과 같다.
 
@@ -78,18 +99,18 @@ while(queue.waitForMessage()) {
 
 browser에서는 event listener가 부착된 이벤트가 발생하면 새로운 메시지를 queue에 추가한다. 이벤트가 발생했더라도 listener가 없다면 메시지는 유실된다. 예를 들어, ```onclick```과 같은 listener가 붙은 버튼, 링크 등을 클릭하면 해당 클릭 이벤트가 메시지 형태로 queue에 새로 추가된다.
 
-### 2-3. callback queue vs job queue
+### 3-3. callback queue vs job queue
 
 ES6/ES2015 에서 소개된 job queue는 callback queue와 다른 queue이며 ```Promise``` 객체를 사용할 경우 job queue를 사용하게 된다. ```Promise```를 사용할 때 callback 함수 역할을 하는 ```.then```을 사용하게 되며, 이런 thenable한 함수들은 job queue에 추가된다.
 두 queue는 우선순위가 다르다. job queue의 우선순위가 callback queue보다 높다. 따라서 event loop는 call stack이 비어있을 경우, job queue에서 기다리는 모든 작업을 처리한 뒤에 callback queue로 이동하게 된다.
 
-### 2-4. event loop 기반 런타임 모델의 단점?
+### 3-4. event loop 기반 런타임 모델의 단점?
 
 만약 메시지 하나를 처리할 때 너무 오래 걸리면 웹 앱이 클릭이나 스크롤과 같은 사용자 상호작용을 처리하기 어려워 UI의 반응성이 떨어진다. browser에서는 너무 오래걸리는 작업에 대해 "스크립트 응답 없음"을 화면에 표시해서 이 문제를 어느정도 완화해준다. 개발자로서 사용할 수 있는 좋은 방법으로는 메시지 처리를 가볍게 유지하고, 가능하다면 하나의 메시지를 여러 개로 나누는 것이다. 다시 말해서, 코드를 작성할 때 메시지 처리 함수를 최소한의 기능만 동작하도록 잘게 쪼개는 것이 핵심이라고 할 수 있다.
 
-## 3. 예시를 통한 상세 설명
+## 4. 예시를 통한 상세 설명
 
-### 3-1. setTimeout을 통한 함수 실행 예약
+### 4-1. setTimeout을 통한 함수 실행 예약
 
 javascript의 비동기 함수 관련 설명 예제에서 빼놓지 않고 등장하는 ```setTimeout``` 함수는 비동기 작업을 예약하는 용도로 사용한다. ```setTimeout``` 함수는 큐에 추가할 메시지, 딜레이 값 (default = 0)을 인자로 받는다. 딜레이 값은 메시지를 queue에 추가하기까지 기다릴 (최소) 지연 시간을 나타낸다.
 
@@ -129,7 +150,7 @@ message 1
 
 그렇다면, 6번 줄에서 대기 시간을 7000으로 바꾸면 어떻게 될까? 처음에는 "message 4"만 console에 출력되어 있다가, 약 7초 후 "message 5", "message 3", "message 2"가 거의 동시에 출력된다. 그리고 약 3초 후 "message1"이 출력된다. 즉, call stack에서 7초를 기다리는 작업을 하는 동안, 0초, 5초 대기 후 queue에 callback이 저장되어 실행 준비 상태가 되지만, 아직 call stack의 작업이 끝나지 않았기 때문에, callback 이 실행되지 않다가 call stack 작업이 완료되자마자 즉시 event loop에 의해 queue에 있는 작업들이 call stack에 옮겨지면서 실행된 것이다.
 
-### 3-2. blocking, non-blocking I/O
+### 4-2. blocking, non-blocking I/O
 
 이 부분은 javascript의 ```Promise``` 객체와 ```async```, ```await``` 구문에 대한 이해가 필요하다. 자세한 내용은 다른 글에서 다루도록 하겠다.
 앞선 예제에서 ```setTimeout``` 함수가 일정 시간 동안 대기했다가 함수를 실행하도록 예약하는 것임을 확인했다. 이는 non-blocking 방식의 대표적인 예로, 기다리는 시간동안 다른 동작들이 수행되지 않도록 막지 않는다. 즉, 비동기 처리를 통한 동시성 프로그래밍의 대표적인 예라고 할 수 있다. 그런데, 앞선 예제에서 ```while```을 통해 일정 시간을 기다리는 코드를 작성했었는데, ```setTimeout```과의 차이가 무엇일까? 정답은 blocking 방식이라는 점이다. 이해를 위해 다음의 예제를 살펴보자.
@@ -213,23 +234,23 @@ message 2
 
 이 예제의 시사점은 매우 중요하다. 아무리 비동기 함수"처럼" 코드를 작성을 한다고 해도, 실제 내부적으로 동작하는 코드가 non-blocking 방식이 아님에도 ```async```와 ```await``` 구문을 남용한다면, 실제 코드의 동작은 일련의 동기 함수를 호출하는 경우와 크게 다르지 않을 수 있다. 따라서, 여러 3rd party API를 사용하는 경우에는 특정 함수가 비동기 처리를 타겟팅하여 non-blocking 방식으로 동작하는 것이 맞는지 꼼꼼하게 검토 후 사용하는 습관을 들여야 한다.
 
-## 4. 다른 언어와의 비교
+## 5. 다른 언어와의 비교
 
-### 4-1. javascript vs python?
+### 5-1. javascript vs python?
 
 미묘한 차이가 있지만, low-level 파악에 시간을 많이 할애할 필요는 없어보인다. 가장 큰 차이는 javascript에서는 built-in event loop가 존재한다는 것이고, 파이썬에서는 asyncio같은 별도의 모듈을 통해 코드 레벨에서 event loop를 셋업해주는 부분을 준비해야 한다는 점이다. 문법적으로는 ```async```, ```await``` 구문 등을 거의 똑같이 사용할 수 있으며, javascript의 ```Promise``` 객체가 python의 ```Task```와 유사하다. 이 정도만 짚고 넘어가도록 하자.
 
-### 4-2. javascript vs dart?
+### 5-2. javascript vs dart?
 
 dart의 ```Future```가 javascript의 ```Promise```와 유사한 개념으로 사용된다. ```async```, ```await``` 등 문법적인 측면도 매우 유사하다.
 
-### 4-3. javascript vs kotlin?
+### 5-3. javascript vs kotlin?
 
 javascript의 ```Promise```는 kotlin coroutine의 ```Deferred```와 개념적으로 유사하다. 단 몇 가지 문법적인 차이가 존재한다. kotlin의 경우 javascript나 python에서 함수 앞에 붙이는 ```async``` 대신 ```suspend```라는 용어를 사용한다. ```async```와 ```await```도 kotlin에 존재하긴 하지만, 사용 방식이나 형태가 javascript, python, dart와 다르다.
 
-## 5. 다른 cross-origin 런타임과의 통신 방법
+## 6. 다른 cross-origin 런타임과의 통신 방법
 
-### 5-1. postMessage 함수를 통한 메시지 전송
+### 6-1. postMessage 함수를 통한 메시지 전송
 
 web worker나 cross-origin의 iframe은 자신만의 stack, heap, queue를 가진다. 서로 다른 두 런타임은 ```postMessage``` 메서드를 통해 메시지를 보내는 방식으로만 서로 통신할 수 있다. 상대가 listener를 통해 메시지 (이벤트)를 수신하고 있을 때, ```postMessage```는 상대 런타임에 메시지를 추가한다. 페이지와 새로 생성된 팝업 간의 통신, 혹은 페이지와 embed된 iframe 사이의 통신에 사용할 수 있다.
 기본적으로는 다른 페이지 간의 스크립트는 각 페이지가 같은 protocol, port 번호, host를 공유하고 있을 때에만 서로 접근이 가능하다. (동일 출처 정책) ```window.postMessage()```는 이 제약 조건을 안전하게 우회하도록 해주는 역할을 수행한다.
@@ -272,7 +293,7 @@ function receiveMessage(event)
 - origin: ```postMessage```가 호출될 때 메시지를 보내는 window의 origin을 의미한다. http://example.com:8080같이 URI 형식이다.
 - source: 메시지를 보낸 window 객체에 대한 참조. 이것을 활용하면 서로 다른 origin의 두 개의 윈도우에서 쌍방향 통신을 할 수 있다.
 
-### 5-2. 보안 강화
+### 6-2. 보안 강화
 
 크로스 사이트 스크립팅 공격 방지하기 위해 다음과 같은 조치를 취할 수 있다.
 
@@ -281,7 +302,7 @@ function receiveMessage(event)
 - 보내는 쪽의 신원을 확인하는 것에 더해, 항상 받은 메시지의 구문이 유효한지 확인하자.
 - ```postMessage``` 함수를 통해 다른 윈도우로 데이터를 보낼 때는 "\*"를 사용하지 말고 항상 정확한 타겟 origin을 사용하자.
 
-## 6. References
+## 7. References
 
 [https://jenkov.com/tutorials/java-concurrency/single-threaded-concurrency.html#single-threaded-concurrency-designs](https://jenkov.com/tutorials/java-concurrency/single-threaded-concurrency.html#single-threaded-concurrency-designs)
 
