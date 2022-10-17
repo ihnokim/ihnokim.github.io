@@ -32,12 +32,12 @@ javascript는 단일 스레드 기반의 언어로 한 번에 하나의 작업�
 동기 방식의 식당에서 손님1의 주문을 받은 종업원은 햄버거가 조리될 때까지 주방에서 기다리다가, 햄버거가 준비되면 손님1에게 햄버거를 서빙한다.
 서빙이 완료된 후에야 다음 손님2의 주문을 받는다. 즉, 종업원이 아무 행동도 하지 않고 기다리기만 하는 시간이 존재한다.
 
-![sync example]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/sync_example.gif){: .align-center}
+![sync example]({{ site.url }}{{ site.baseurl }}/assets/images/event-loop/sync-example.gif){: .align-center}
 
 반면, 비동기 방식의 식당에서는 손님1의 주문을 받은 종업원이 주방에 햄버거 준비를 요청한 뒤, 기다리지 않고 바로 다음 손님2의 주문을 받는다.
 즉, 종업원은 쉴 틈도 없이 아주 열심히 일한다.
 
-![async example]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/async_example.gif){: .align-center}
+![async example]({{ site.url }}{{ site.baseurl }}/assets/images/event-loop/async-example.gif){: .align-center}
 
 ## 2. event loop의 개념 및 주요 영역들
 
@@ -50,7 +50,7 @@ event loop는 javascript 런타임에서 동작원리를 설명하기 위해 핵
 
 event loop는 보통 싱글 스레드 기반의 동시성 (single-threaded concurrency) 제어에 활용된다. 자세한 설명에 앞서 이해를 돕기 위해 event loop와 관련된 stack, heap, queue 영역에 대한 내용을 살펴보자.
 
-![stack, heap, queue explanation]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop1.PNG){: .align-center}
+![stack, heap, queue explanation]({{ site.url }}{{ site.baseurl }}/assets/images/event-loop/event-loop1.PNG){: .align-center}
 
 ### 2-1. stack 영역
 
@@ -74,7 +74,7 @@ javascript의 런타임 자체는 단일 스레드이지만, browser 환경은 �
 
 ### 3-1. browser 실행 환경 구성요소들의 역할
 
-![browser runtime]({{ site.url }}{{ site.baseurl }}/assets/images/event_loop/event_loop2.png){: .align-center}
+![browser runtime]({{ site.url }}{{ site.baseurl }}/assets/images/event-loop/event-loop2.png){: .align-center}
 
 browser 실행 환경을 역할별로 나누면, 크게 web APIs, event table, callback queue, event loop 등으로 구성되어 있다.
 - heap & call stack: 앞서 설명한 부분과 동일하다.
